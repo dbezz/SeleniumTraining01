@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Suite1" verbose="1" >
+    <test name="TestClasses">
+        <parameter name="browser" value="firefox"></parameter>
+        <parameter name="url" value="http://www.evernote.com"></parameter>
+        <parameter name="driverPath" value=""></parameter>
+        <classes>
+            <class name = "pz01_seleniumTrainig.SampleTest">
+            </class>
+        </classes>
+    </test>
+</suite>
