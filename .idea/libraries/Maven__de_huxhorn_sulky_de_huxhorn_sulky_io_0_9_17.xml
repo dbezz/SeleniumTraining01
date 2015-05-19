@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: de.huxhorn.sulky:de.huxhorn.sulky.io:0.9.17">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.io/0.9.17/de.huxhorn.sulky.io-0.9.17.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.io/0.9.17/de.huxhorn.sulky.io-0.9.17-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/huxhorn/sulky/de.huxhorn.sulky.io/0.9.17/de.huxhorn.sulky.io-0.9.17-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
