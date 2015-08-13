@@ -1,0 +1,31 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="chQA" verbose="1" >
+    <test name="TestClasses">
+        <parameter name="browser" value="chrome"></parameter>
+        <parameter name="url" value="https://ers.qa.synapse.com/"></parameter>
+        <parameter name="driverPath" value=""></parameter>
+        <classes>
+           <!-- <class name = "Tests.AirExpenseTest">
+                <methods>
+                    <include name="AirExpenseTestCRUD"/>
+                </methods>
+            </class>
+            <class name = "Tests.CarRentalExpenseTest">
+                <methods>
+                    <include name="CarRentalTestCRUD"/>
+                </methods>
+            </class>
+            <class name = "Tests.BaggageExpenseTest">
+                <methods>
+                    <include name="BaggageExpenseTestCRUD"/>
+                </methods>
+            </class>-->
+            <class name = "Tests.HotelExpenseTest">
+                <methods>
+                    <include name="HotelExpenseTestCRUD"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

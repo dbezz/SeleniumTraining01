@@ -6,7 +6,7 @@
         <parameter name="url" value="http://www.evernote.com"></parameter>
         <parameter name="driverPath" value="C:\Tools\Webdriver\Yandex\chromedriver.exe"></parameter>
         <classes>
-            <class name = "pz01_seleniumTrainig.SampleTest">
+            <class name = "Tests.BaggageExpenseTest">
             </class>
         </classes>
     </test>
