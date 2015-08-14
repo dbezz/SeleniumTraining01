@@ -30,9 +30,11 @@ public class StartPage extends BasePage {
         return isElementDisplayed(addExpenseLink);
     }
 
-    public UserGridPage selectUserRole() {
+    public UserGridPage selectUserRole()
+    {
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(currentUser)).click();
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(selectUserRole)).click();
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='progressBar']")));
         UserGridPage userGridPage = new UserGridPage(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver,EXPLICIT_TIMEOUT), userGridPage);
         return userGridPage;
