@@ -27,6 +27,9 @@ public class BaseForm extends BasePage
     @FindBy(xpath = "//div[starts-with(@class,'booking')]//span[@class='arrow']")
     private WebElement openBookingsSelectArrow;
 
+    @FindBy(xpath = "//div[starts-with(@class,'booking')]/div/strong")
+    private WebElement submittedBooking;
+
     @FindBy(xpath = "//div[starts-with(@class,'booking')]//em")
     private WebElement selectedBooking;
 
@@ -111,10 +114,10 @@ public class BaseForm extends BasePage
     @FindBy(xpath = "//div[starts-with(@class,'personal-amt-col')]//input/preceding-sibling::span")
     private WebElement personalAmountSpan;
 
-    @FindBy(xpath = "//div[@class='business-amt-col']//input")
+    @FindBy(xpath = "//div[starts-with(@class,'business-amt-col')]//input")
     private WebElement businessAmountInput;
 
-    @FindBy(xpath = "//div[@class='business-amt-col']//input/preceding-sibling::span")
+    @FindBy(xpath = "//div[starts-with(@class,'business-amt-col')]//input/preceding-sibling::span")
     private WebElement businessAmountSpan;
 
     @FindBy(xpath = "//p[text()='Purpose:']/../following-sibling::td//span")
@@ -135,11 +138,21 @@ public class BaseForm extends BasePage
     @FindBy(xpath = "//div[@class='type-col']//span[@class='arrow']")
     private WebElement expenseTypeSelectOpenArrow;
 
+    @FindBy(xpath = "//textarea[@name='airBookedOutsideReason']")
+    private WebElement airBookedOutsideReasonInput;
+
+
     @FindBy(xpath = "//div[@class='modal-bottombar']//button/span[text()='Save']")
     private WebElement buttonSave;
 
+    @FindBy(xpath = "//div[@class='modal-bottombar']//button/span[text()='Submit']")
+    private WebElement buttonSubmit;
+
     @FindBy(xpath = "//div[@class='modal-bottombar']//button/span[text()='Cancel']")
     private WebElement buttonCancel;
+
+    @FindBy(xpath = "//div[@class='modal-bottombar']//button/span[text()='Revert']")
+    private WebElement buttonRevert;
 
     public BaseForm inputTicketNumber(String name)
     {
@@ -277,6 +290,16 @@ public class BaseForm extends BasePage
         }
         return this;
     }
+
+    public BaseForm inputAirBookedOutsideReason(String reason)
+    {
+        if (!(reason==null))
+        {
+            airBookedOutsideReasonInput.sendKeys(reason);
+        }
+        return this;
+    }
+
     public String getMerchant()
     {
         return merchantInput.getAttribute("value");
@@ -307,6 +330,11 @@ public class BaseForm extends BasePage
         return selectedBooking.getText();
     }
 
+    public String getSubmittedBooking()
+    {
+        return submittedBooking.getText();
+    }
+
     public String getExpenseType()
     {
         return selectedExpenseType.getText();
@@ -315,6 +343,11 @@ public class BaseForm extends BasePage
     public String getPurpose()
     {
         return selectedPurpose.getText();
+    }
+
+    public String getOutReason()
+    {
+        return airBookedOutsideReasonInput.getText();
     }
 
     public String getTravelProgramBooking()
@@ -468,8 +501,19 @@ public class BaseForm extends BasePage
         buttonSave.click();
     }
 
-    public void Cancel()
+    public void clickCancel()
     {
         buttonCancel.click();
+    }
+
+    public void clickSubmit()
+    {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(buttonSubmit));
+        buttonSubmit.click();
+    }
+
+    public void clickRevert()
+    {
+        buttonRevert.click();
     }
 }

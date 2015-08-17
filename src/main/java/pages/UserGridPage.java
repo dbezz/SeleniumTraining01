@@ -42,8 +42,18 @@ public class UserGridPage extends BasePage
     @FindBy(xpath = "//span[text()='OK']")
     private WebElement buttonOK;
 
+    @FindBy(xpath = "//div[@class='progressBar']")
+    private WebElement progressBar;
+
+    @FindBy(xpath = "//a[text()='Submitted']")
+    private WebElement submittedTab;
+
+    @FindBy(xpath = "//a[text()='Unsubmitted']")
+    private WebElement unsubmittedTab;
+
     public void openAddExpenseList()
     {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(progressBar)));
         addExpenseList.click();
     }
     public BaseForm openBaggageFeeForm()
@@ -55,6 +65,7 @@ public class UserGridPage extends BasePage
 
     public BaseForm openAirTravelForm()
     {
+        openAddExpenseList();
         return openForm(airTravelItem);
     }
     public BaseForm openCarRentalForm()
@@ -69,6 +80,7 @@ public class UserGridPage extends BasePage
 
     public BaseForm openForm(WebElement item)
     {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(progressBar)));
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(item));
         item.click();
         BaseForm form = new BaseForm(driver);
@@ -88,7 +100,7 @@ public class UserGridPage extends BasePage
     public boolean isRecordPresentByMerchantAmount(String merchant, String amount) {
         try {
             (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(.,'" + merchant.toUpperCase() + "')]/../../div[@class='amount']/span[contains(.,'" + amount + "')]")));
-            return true;
+                return true;
         } catch (TimeoutException e) {
             return false;
         }
@@ -137,6 +149,20 @@ public class UserGridPage extends BasePage
     public UserGridPage clickDelete()
     {
         buttonDelete.click();
+        return this;
+    }
+
+    public UserGridPage selectSubmittedTab()
+    {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(submittedTab));
+        submittedTab.click();
+        return this;
+    }
+
+    public UserGridPage selectUnsubmittedTab()
+    {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(unsubmittedTab));
+        unsubmittedTab.click();
         return this;
     }
 
