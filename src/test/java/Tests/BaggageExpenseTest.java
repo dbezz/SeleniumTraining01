@@ -114,7 +114,7 @@ public class BaggageExpenseTest extends BaseTest
         softAssert.assertEquals(baggageFeeForm.getBusinessAmount(), businessAmountUpd, "Updated business amount: " + businessAmountUpd);
         softAssert.assertTrue(baggageFeeForm.getPurpose().contains(purposeUpd), "Updated purpose: " + purposeUpd);
 
-        baggageFeeForm.Cancel();
+        baggageFeeForm.clickCancel();
         userGridPage.selectRecordMerchantCityAmount(true, merchantUpd, cityUpd, amountUpd);
         userGridPage.clickDelete();
         userGridPage.confirmAlert();

@@ -159,7 +159,7 @@ public class CarRentalExpenseTest extends BaseTest
         softAssert.assertEquals(carRentalForm.getBusinessAmount(), businessAmountUpd, "Updated business amount: " + businessAmountUpd);
         softAssert.assertTrue(carRentalForm.getPurpose().contains(purposeUpd), "Updated purpose: " + purposeUpd);
 
-        carRentalForm.Cancel();
+        carRentalForm.clickCancel();
         userGridPage.selectRecordMerchantAmount(true, merchantUpd, amountUpd);
         userGridPage.clickDelete();
         userGridPage.confirmAlert();

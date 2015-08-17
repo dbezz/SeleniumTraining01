@@ -136,7 +136,7 @@ public class HotelExpenseTest extends BaseTest
         softAssert.assertTrue(hotelExpenseForm.getPurpose().contains(purposeUpd), "Updated purpose: " + purposeUpd);
         softAssert.assertTrue(hotelExpenseForm.getTravelProgramBooking().contains(travelProgramBookingUpd), "Updated travel program booking: " + travelProgramBookingUpd);
 
-        hotelExpenseForm.Cancel();
+        hotelExpenseForm.clickCancel();
         userGridPage.selectRecordMerchantAmount(true, merchantUpd, amountUpd);
         userGridPage.clickDelete();
         userGridPage.confirmAlert();

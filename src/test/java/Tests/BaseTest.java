@@ -28,7 +28,10 @@ import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -53,6 +56,10 @@ public class BaseTest {
     }
 
     protected Logger log = Logger.getLogger("TEST");
+
+    protected DecimalFormat df = new DecimalFormat("#.00");
+    protected DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    protected Calendar cal = Calendar.getInstance();
 
     @Parameters({"browser", "driverPath"})
     @BeforeMethod
