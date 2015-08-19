@@ -25,7 +25,7 @@ public class BaggageExpenseTest extends BaseTest
     {
         DecimalFormat df = new DecimalFormat("#.00");
 
-        String personalAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000)) / 100);
+        String personalAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
         String businessAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
         Float amountNum=Float.parseFloat(personalAmount)+Float.parseFloat(businessAmount);
         String amount = df.format(amountNum);

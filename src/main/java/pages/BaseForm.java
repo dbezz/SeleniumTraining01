@@ -154,6 +154,9 @@ public class BaseForm extends BasePage
     @FindBy(xpath = "//div[@class='modal-bottombar']//button/span[text()='Revert']")
     private WebElement buttonRevert;
 
+    @FindBy(xpath = "//span[contains(@ng-show,'serverActionInProgress')]/em")
+    private WebElement actionInProgress;
+
     public BaseForm inputTicketNumber(String name)
     {
         setText(ticketNoInput, name);
@@ -296,6 +299,7 @@ public class BaseForm extends BasePage
         if (!(reason==null))
         {
             airBookedOutsideReasonInput.sendKeys(reason);
+            merchantInput.sendKeys("");
         }
         return this;
     }
@@ -347,7 +351,7 @@ public class BaseForm extends BasePage
 
     public String getOutReason()
     {
-        return airBookedOutsideReasonInput.getText();
+        return airBookedOutsideReasonInput.getAttribute("value");
     }
 
     public String getTravelProgramBooking()
@@ -496,20 +500,26 @@ public class BaseForm extends BasePage
         setText(transactionDateInput,date);
         return this;
     }
+    public void waitStopFormSpinner()
+    {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//span[contains(@ng-show,'serverActionInProgress')]/em")));
+    }
     public void saveForm()
     {
         buttonSave.click();
+        waitStopFormSpinner();
     }
 
     public void clickCancel()
     {
         buttonCancel.click();
+        waitStopFormSpinner();
     }
 
     public void clickSubmit()
     {
-        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(buttonSubmit));
         buttonSubmit.click();
+        waitStopFormSpinner();
     }
 
     public void clickRevert()

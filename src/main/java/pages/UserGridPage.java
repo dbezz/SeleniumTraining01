@@ -11,10 +11,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * Created by dmytro.bezzubikov on 4/29/2015.
  */
-public class UserGridPage extends BasePage
-{
-    public UserGridPage(WebDriver driver)
-    {
+public class UserGridPage extends BasePage {
+    public UserGridPage(WebDriver driver) {
         super(driver);
     }
 
@@ -51,40 +49,42 @@ public class UserGridPage extends BasePage
     @FindBy(xpath = "//a[text()='Unsubmitted']")
     private WebElement unsubmittedTab;
 
-    public void openAddExpenseList()
-    {
+    @FindBy(xpath = "///div[@class='drop ng-scope']")
+    private WebElement itemsDiv;
+
+    @FindBy(xpath = "//div[@window-class='light-box-common loading-in-progress']")
+    private WebElement loadingDiv;
+
+    public void openAddExpenseList() {
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(progressBar)));
         addExpenseList.click();
     }
-    public BaseForm openBaggageFeeForm()
-    {
+
+    public BaseForm openBaggageFeeForm() {
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(otherTravelExpenses));
         otherTravelExpenses.click();
         return openForm(baggageFeeItem);
     }
 
-    public BaseForm openAirTravelForm()
-    {
+    public BaseForm openAirTravelForm() {
         openAddExpenseList();
         return openForm(airTravelItem);
     }
-    public BaseForm openCarRentalForm()
-    {
+
+    public BaseForm openCarRentalForm() {
         return openForm(carRentalItem);
     }
 
-    public BaseForm openHotelForm()
-    {
+    public BaseForm openHotelForm() {
         return openForm(hotelItem);
     }
 
-    public BaseForm openForm(WebElement item)
-    {
+    public BaseForm openForm(WebElement item) {
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(progressBar)));
         (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(item));
         item.click();
         BaseForm form = new BaseForm(driver);
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver,EXPLICIT_TIMEOUT), form);
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, EXPLICIT_TIMEOUT), form);
         return form;
     }
 
@@ -100,20 +100,20 @@ public class UserGridPage extends BasePage
     public boolean isRecordPresentByMerchantAmount(String merchant, String amount) {
         try {
             (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(.,'" + merchant.toUpperCase() + "')]/../../div[@class='amount']/span[contains(.,'" + amount + "')]")));
-                return true;
+            return true;
         } catch (TimeoutException e) {
             return false;
         }
     }
 
-    public UserGridPage selectRecordMerchantCityAmount(boolean expected, String merchant, String city, String amount)
-    {
-        WebElement checkbox= driver.findElement(By.xpath("//span[contains(.,'" + merchant.toUpperCase() +
+    public UserGridPage selectRecordMerchantCityAmount(boolean expected, String merchant, String city, String amount) {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(.,'" + merchant.toUpperCase() + "')]/../../div[@class='amount']/span[contains(.,'" + amount + "')]")));
+        WebElement checkbox = driver.findElement(By.xpath("//span[contains(.,'" + merchant.toUpperCase() +
                 "') and contains(.,'" + city.toUpperCase() + "')]/../../div[@class='amount']/span[contains(.,'" +
                 amount + "')]/../..//div/input"));
         try {
             if (!checkbox.getAttribute("checked").toString().equals("checked")) {
-                if(!expected) checkbox.click();
+                if (!expected) checkbox.click();
             }
         } catch (NullPointerException e) {
             if (expected) checkbox.click();
@@ -121,14 +121,14 @@ public class UserGridPage extends BasePage
         return this;
     }
 
-    public UserGridPage selectRecordMerchantAmount(boolean expected, String merchant, String amount)
-    {
-        WebElement checkbox= driver.findElement(By.xpath("//span[contains(.,'" + merchant.toUpperCase() +
+    public UserGridPage selectRecordMerchantAmount(boolean expected, String merchant, String amount) {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(.,'" + merchant.toUpperCase() + "')]/../../div[@class='amount']/span[contains(.,'" + amount + "')]")));
+        WebElement checkbox = driver.findElement(By.xpath("//span[contains(.,'" + merchant.toUpperCase() +
                 "')]/../../div[@class='amount']/span[contains(.,'" +
                 amount + "')]/../..//div/input"));
         try {
             if (!checkbox.getAttribute("checked").toString().equals("checked")) {
-                if(!expected) checkbox.click();
+                if (!expected) checkbox.click();
             }
         } catch (NullPointerException e) {
             if (expected) checkbox.click();
@@ -136,38 +136,36 @@ public class UserGridPage extends BasePage
         return this;
     }
 
-    public void openRecordMerchantCityAmount(String merchant, String city, String amount)
-    {
+    public void openRecordMerchantCityAmount(String merchant, String city, String amount) {
         driver.findElement(By.xpath("//span[contains(.,'" + merchant.toUpperCase() + "') and contains(.,'" + city.toUpperCase() + "')]/../../div[@class='amount']/span[contains(.,'" + amount + "')]")).click();
     }
 
-    public void openRecordMerchantAmount(String merchant, String amount)
-    {
+    public void openRecordMerchantAmount(String merchant, String amount) {
         driver.findElement(By.xpath("//span[contains(.,'" + merchant.toUpperCase() + "') ]/../../div[@class='amount']/span[contains(.,'" + amount + "')]")).click();
     }
 
-    public UserGridPage clickDelete()
-    {
+    public UserGridPage clickDelete() {
         buttonDelete.click();
         return this;
     }
 
-    public UserGridPage selectSubmittedTab()
-    {
-        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(submittedTab));
+    public void waitStopGridSpinner() {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@window-class='light-box-common loading-in-progress']")));
+    }
+
+    public UserGridPage selectSubmittedTab() {
+        waitStopGridSpinner();
         submittedTab.click();
         return this;
     }
 
-    public UserGridPage selectUnsubmittedTab()
-    {
-        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(unsubmittedTab));
+    public UserGridPage selectUnsubmittedTab() {
+        waitStopGridSpinner();
         unsubmittedTab.click();
         return this;
     }
 
-    public void confirmAlert()
-    {
+    public void confirmAlert() {
         buttonOK.click();
     }
 }

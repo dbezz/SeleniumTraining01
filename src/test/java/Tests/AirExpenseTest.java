@@ -35,6 +35,7 @@ public class AirExpenseTest extends BaseTest
             userGridPage = startPage.selectUserRole();
         } else
             userGridPage= PageFactory.initElements(driver, UserGridPage.class);
+
         airTravelForm = userGridPage.openAirTravelForm();
         airTravelForm.
                 inputMerchant(airExpense.getMerchant()).
@@ -85,6 +86,7 @@ public class AirExpenseTest extends BaseTest
 
         verifyAirTravelForm(airExpenseUpd);
         airTravelForm.inputAirBookedOutsideReason(airExpenseUpd.getOutReason());
+
         airTravelForm.clickSubmit();
         userGridPage.selectSubmittedTab();
         softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount()),
@@ -99,9 +101,11 @@ public class AirExpenseTest extends BaseTest
 
         softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount()),
                 "Record with merchant:" + airExpenseUpd.getMerchant() + " and total amount " + airExpenseUpd.getAmount() + " is present");
-        userGridPage.openRecordMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
 
+        userGridPage.openRecordMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
+        verifyAirTravelForm(airExpenseUpd);
         airTravelForm.clickCancel();
+
         userGridPage.selectRecordMerchantAmount(true, airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
         userGridPage.clickDelete();
         userGridPage.confirmAlert();
@@ -188,6 +192,7 @@ public class AirExpenseTest extends BaseTest
         softAssert.assertEquals(airTravelForm.getTo(), expense.getToLocationExp());
         softAssert.assertEquals(airTravelForm.getPersonalAmount(), expense.getPersonalAmount());
         softAssert.assertEquals(airTravelForm.getBusinessAmount(), expense.getBusinessAmount());
+
         softAssert.assertTrue(airTravelForm.getPurpose().contains(expense.getPurpose()));
     }
 
@@ -195,7 +200,7 @@ public class AirExpenseTest extends BaseTest
     {
         if (!(expense.getOutReason()==null))
         {
-            softAssert.assertEquals(airTravelForm.getOutReason(),(expense.getPurpose()));
+            softAssert.assertEquals(airTravelForm.getOutReason(),(expense.getOutReason()));
         }
     }
 
