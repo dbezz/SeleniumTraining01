@@ -459,6 +459,7 @@ public class BaseForm extends BasePage
     }
     public BaseForm clickItem(String item)
     {
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(activeSelect.findElement(By.xpath("./div/ul//div/div[contains(.,'" + item + "')]/preceding-sibling::div/div"))));
         activeSelect.findElement(By.xpath("./div/ul//div/div[contains(.,'" + item + "')]/preceding-sibling::div/div")).click();
         return this;
     }

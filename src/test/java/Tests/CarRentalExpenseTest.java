@@ -97,7 +97,7 @@ public class CarRentalExpenseTest extends BaseTest
         userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
 
         verifyCarRentalForm(expenseUpd);
-        verifyCarRentalFormOutReason(expenseUpd);
+        //verifyCarRentalFormOutReason(expenseUpd);
 
         form.clickRevert();
         userGridPage.selectUnsubmittedTab();
@@ -167,8 +167,8 @@ public class CarRentalExpenseTest extends BaseTest
         expenseUpd.setPickUpLocationExp("OFF");
         expenseUpd.setDropOffLocationExp("EGN");
 
-        if (!expenseUpd.getBooking().equals("Balboa travel"))
-            expenseUpd.setOutReason("Reason");
+        //if (!expenseUpd.getBooking().equals("Balboa travel"))
+            //expenseUpd.setOutReason("Reason");
     }
     
     private void verifyCarRentalForm(Expense expense)
