@@ -1,6 +1,6 @@
 package Tests;
 
-import Entities.AirExpense;
+import Entities.Expense;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 import pages.BaseForm;
@@ -18,10 +18,10 @@ public class AirExpenseTest extends BaseTest
 {
     private StartPage startPage;
     private UserGridPage userGridPage;
-    private BaseForm airTravelForm;
+    private BaseForm form;
     
-    private AirExpense airExpense= new AirExpense();
-    private AirExpense airExpenseUpd = new AirExpense();
+    private Expense expense = new Expense();
+    private Expense expenseUpd = new Expense();
 
     @Test
     public void AirTravelTestCRUD()
@@ -35,154 +35,154 @@ public class AirExpenseTest extends BaseTest
         } else
             userGridPage= PageFactory.initElements(driver, UserGridPage.class);
 
-        airTravelForm = userGridPage.openAirTravelForm();
-        airTravelForm.
-                inputMerchant(airExpense.getMerchant()).
-                inputTicketNumber(airExpense.getTicketNumber()).
-                selectBooking(airExpense.getBooking()).
-                setTransactionDate(airExpense.getTransactionDate()).
-                setTravelDate(airExpense.getTravelDate()).
-                setCarrier(airExpense.getCarrier()).
-                inputFlight(airExpense.getFlightNo()).
-                setFrom(airExpense.getFromLocation()).
-                setTo(airExpense.getToLocation()).
-                inputPersonalAmount(airExpense.getPersonalAmount()).
-                inputBusinessAmount(airExpense.getBusinessAmount()).
+        form = userGridPage.openAirTravelForm();
+        form.
+                inputMerchant(expense.getMerchant()).
+                inputTicketNumber(expense.getTicketNumber()).
+                selectBooking(expense.getBooking()).
+                setTransactionDate(expense.getTransactionDate()).
+                setTravelDate(expense.getTravelDate()).
+                setCarrier(expense.getCarrier()).
+                inputFlight(expense.getFlightNo()).
+                setFrom(expense.getFromLocation()).
+                setTo(expense.getToLocation()).
+                inputPersonalAmount(expense.getPersonalAmount()).
+                inputBusinessAmount(expense.getBusinessAmount()).
                 openPurposesSelector().
-                selectItem(airExpense.getPurpose());
-        airTravelForm.saveForm();
+                selectItem(expense.getPurpose());
+        form.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(airExpense.getMerchant(), airExpense.getAmount()),
-                "Record with merchant:" + airExpense.getMerchant() + " and total amount " + airExpense.getAmount() + " is added");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expense.getMerchant(), expense.getAmount()),
+                "Record with merchant:" + expense.getMerchant() + " and total amount " + expense.getAmount() + " is added");
 
-        userGridPage.openRecordMerchantAmount(airExpense.getAmount(), airExpense.getAmount());
+        userGridPage.openRecordMerchantAmount(expense.getAmount(), expense.getAmount());
 
-        verifyAirTravelForm(airExpense);
+        verifyAirTravelForm(expense);
         
-        airTravelForm.
-                inputMerchant(airExpenseUpd.getMerchant()).
-                inputTicketNumber(airExpenseUpd.getTicketNumber()).
-                selectBooking(airExpenseUpd.getBooking()).
-                setTransactionDate(airExpenseUpd.getTransactionDate()).
-                setTravelDate(airExpenseUpd.getTravelDate()).
-                setCarrier(airExpenseUpd.getCarrier()).
-                inputFlight(airExpenseUpd.getFlightNo()).
-                setFrom(airExpenseUpd.getFromLocation()).
-                setTo(airExpenseUpd.getToLocation()).
-                inputPersonalAmount(airExpenseUpd.getPersonalAmount()).
-                inputBusinessAmount(airExpenseUpd.getBusinessAmount()).
+        form.
+                inputMerchant(expenseUpd.getMerchant()).
+                inputTicketNumber(expenseUpd.getTicketNumber()).
+                selectBooking(expenseUpd.getBooking()).
+                setTransactionDate(expenseUpd.getTransactionDate()).
+                setTravelDate(expenseUpd.getTravelDate()).
+                setCarrier(expenseUpd.getCarrier()).
+                inputFlight(expenseUpd.getFlightNo()).
+                setFrom(expenseUpd.getFromLocation()).
+                setTo(expenseUpd.getToLocation()).
+                inputPersonalAmount(expenseUpd.getPersonalAmount()).
+                inputBusinessAmount(expenseUpd.getBusinessAmount()).
                 openPurposesSelector().
-                unselectItem(airExpense.getPurpose()).
-                selectItem(airExpenseUpd.getPurpose());
-        airTravelForm.saveForm();
+                unselectItem(expense.getPurpose()).
+                selectItem(expenseUpd.getPurpose());
+        form.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount()),
-                "Record with merchant:" + airExpenseUpd.getMerchant() + " and total amount " + airExpenseUpd.getAmount() + " is present");
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(airExpense.getMerchant(), airExpense.getAmount()),
-                "Record with merchant:" + airExpense.getMerchant() + " and total amount " + airExpense.getAmount() + " is not present");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(expense.getMerchant(), expense.getAmount()),
+                "Record with merchant:" + expense.getMerchant() + " and total amount " + expense.getAmount() + " is not present");
 
-        userGridPage.openRecordMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
 
-        verifyAirTravelForm(airExpenseUpd);
-        airTravelForm.inputOutsideReason(airExpenseUpd.getOutReason());
+        verifyAirTravelForm(expenseUpd);
+        form.inputOutsideReason(expenseUpd.getOutReason());
 
-        airTravelForm.clickSubmit();
+        form.clickSubmit();
         userGridPage.selectSubmittedTab();
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount()),
-                "Record with merchant:" + airExpenseUpd.getMerchant() + " and total amount " + airExpenseUpd.getAmount() + " is present");
-        userGridPage.openRecordMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
 
-        verifyAirTravelForm(airExpenseUpd);
-        verifyAirTravelFormOutReason(airExpenseUpd);
+        verifyAirTravelForm(expenseUpd);
+        verifyAirTravelFormOutReason(expenseUpd);
 
-        airTravelForm.clickRevert();
+        form.clickRevert();
         userGridPage.selectUnsubmittedTab();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount()),
-                "Record with merchant:" + airExpenseUpd.getMerchant() + " and total amount " + airExpenseUpd.getAmount() + " is present");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
 
-        userGridPage.openRecordMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
-        verifyAirTravelForm(airExpenseUpd);
-        airTravelForm.clickCancel();
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
+        verifyAirTravelForm(expenseUpd);
+        form.clickCancel();
 
-        userGridPage.selectRecordMerchantAmount(true, airExpenseUpd.getMerchant(), airExpenseUpd.getAmount());
+        userGridPage.selectRecordMerchantAmount(true, expenseUpd.getMerchant(), expenseUpd.getAmount());
         userGridPage.clickDelete();
         userGridPage.confirmAlert();
 
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(airExpenseUpd.getMerchant(), airExpenseUpd.getAmount()),
-                "Record with merchant:" + airExpenseUpd.getMerchant() + " and total amount " + airExpenseUpd.getAmount() + " is not present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is not present");
 
         softAssert.assertAll();
     }
 
     private void setAirExpenseData()
     {
-        airExpense.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
-        airExpense.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
-        airExpense.setAmount(df.format(Float.parseFloat(airExpense.getPersonalAmount()) + Float.parseFloat(airExpense.getBusinessAmount())));
-        airExpense.setTransactionDate(dateFormat.format(cal.getTime()));
+        expense.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expense.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expense.setAmount(df.format(Float.parseFloat(expense.getPersonalAmount()) + Float.parseFloat(expense.getBusinessAmount())));
+        expense.setTransactionDate(dateFormat.format(cal.getTime()));
         cal.add(Calendar.DATE, -1);
-        airExpense.setTravelDate(dateFormat.format(cal.getTime()));
+        expense.setTravelDate(dateFormat.format(cal.getTime()));
 
-        airExpense.setMerchant("Pacific Wings");
-        airExpense.setTicketNumber("12345");
-        airExpense.setBooking("Balboa travel");
-        airExpense.setCarrier("Delta");
-        airExpense.setFlightNo("123");
-        airExpense.setFromLocation("Detroit Metro Wayne");
-        airExpense.setToLocation("Sacramento Mather");
-        airExpense.setPurpose("Onsite with Prospect");
+        expense.setMerchant("Pacific Wings");
+        expense.setTicketNumber("12345");
+        expense.setBooking("Balboa travel");
+        expense.setCarrier("Delta");
+        expense.setFlightNo("123");
+        expense.setFromLocation("Detroit Metro Wayne");
+        expense.setToLocation("Sacramento Mather");
+        expense.setPurpose("Onsite with Prospect");
 
-        airExpense.setCarrierExp("DL");
-        airExpense.setFromLocationExp("DTW");
-        airExpense.setToLocationExp("MHR");
-        if (!airExpense.getBooking().equals("Balboa travel"))
-            airExpense.setOutReason("Reason");
+        expense.setCarrierExp("DL");
+        expense.setFromLocationExp("DTW");
+        expense.setToLocationExp("MHR");
+        if (!expense.getBooking().equals("Balboa travel"))
+            expense.setOutReason("Reason");
        
-        airExpenseUpd.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
-        airExpenseUpd.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
-        airExpenseUpd.setAmount(df.format(Float.parseFloat(airExpenseUpd.getPersonalAmount()) + Float.parseFloat(airExpenseUpd.getBusinessAmount())));
-        airExpenseUpd.setTransactionDate(dateFormat.format(cal.getTime()));
+        expenseUpd.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expenseUpd.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expenseUpd.setAmount(df.format(Float.parseFloat(expenseUpd.getPersonalAmount()) + Float.parseFloat(expenseUpd.getBusinessAmount())));
+        expenseUpd.setTransactionDate(dateFormat.format(cal.getTime()));
         cal.add(Calendar.DATE, -1);
-        airExpenseUpd.setTravelDate(dateFormat.format(cal.getTime()));
+        expenseUpd.setTravelDate(dateFormat.format(cal.getTime()));
 
-        airExpenseUpd.setMerchant("Aeroflot");
-        airExpenseUpd.setTicketNumber("54321");
-        airExpenseUpd.setBooking("Other");
-        airExpenseUpd.setCarrier("Air Berlin");
-        airExpenseUpd.setFlightNo("321");
-        airExpenseUpd.setFromLocation("Winnipeg Intl");
-        airExpenseUpd.setToLocation("Seronera");
-        airExpenseUpd.setPurpose("Conference");
+        expenseUpd.setMerchant("Aeroflot");
+        expenseUpd.setTicketNumber("54321");
+        expenseUpd.setBooking("Other");
+        expenseUpd.setCarrier("Air Berlin");
+        expenseUpd.setFlightNo("321");
+        expenseUpd.setFromLocation("Winnipeg Intl");
+        expenseUpd.setToLocation("Seronera");
+        expenseUpd.setPurpose("Conference");
 
-        airExpenseUpd.setCarrierExp("AB");
-        airExpenseUpd.setFromLocationExp("YWG");
-        airExpenseUpd.setToLocationExp("SEU");
-        if (!airExpenseUpd.getBooking().equals("Balboa travel"))
-            airExpenseUpd.setOutReason("Reason");
+        expenseUpd.setCarrierExp("AB");
+        expenseUpd.setFromLocationExp("YWG");
+        expenseUpd.setToLocationExp("SEU");
+        if (!expenseUpd.getBooking().equals("Balboa travel"))
+            expenseUpd.setOutReason("Reason");
     }
 
-    private void verifyAirTravelForm(AirExpense expense)
+    private void verifyAirTravelForm(Expense expense)
     {
-        softAssert.assertEquals(airTravelForm.getMerchant(), expense.getMerchant());
-        softAssert.assertEquals(airTravelForm.getTicketNumber(), expense.getTicketNumber());
-        softAssert.assertEquals(airTravelForm.getBooking(), expense.getBooking());
-        softAssert.assertEquals(airTravelForm.getTransactionDate(), expense.getTransactionDate());
-        softAssert.assertEquals(airTravelForm.getTravelDate(), expense.getTravelDate());
-        softAssert.assertEquals(airTravelForm.getCarrier(), expense.getCarrierExp());
-        softAssert.assertEquals(airTravelForm.getFlight(), expense.getFlightNo());
-        softAssert.assertEquals(airTravelForm.getFrom(), expense.getFromLocationExp());
-        softAssert.assertEquals(airTravelForm.getTo(), expense.getToLocationExp());
-        softAssert.assertEquals(airTravelForm.getPersonalAmount(), expense.getPersonalAmount());
-        softAssert.assertEquals(airTravelForm.getBusinessAmount(), expense.getBusinessAmount());
-        softAssert.assertTrue(airTravelForm.getPurpose().contains(expense.getPurpose()));
+        softAssert.assertEquals(form.getMerchant(), expense.getMerchant());
+        softAssert.assertEquals(form.getTicketNumber(), expense.getTicketNumber());
+        softAssert.assertEquals(form.getBooking(), expense.getBooking());
+        softAssert.assertEquals(form.getTransactionDate(), expense.getTransactionDate());
+        softAssert.assertEquals(form.getTravelDate(), expense.getTravelDate());
+        softAssert.assertEquals(form.getCarrier(), expense.getCarrierExp());
+        softAssert.assertEquals(form.getFlight(), expense.getFlightNo());
+        softAssert.assertEquals(form.getFrom(), expense.getFromLocationExp());
+        softAssert.assertEquals(form.getTo(), expense.getToLocationExp());
+        softAssert.assertEquals(form.getPersonalAmount(), expense.getPersonalAmount());
+        softAssert.assertEquals(form.getBusinessAmount(), expense.getBusinessAmount());
+        softAssert.assertTrue(form.getPurpose().contains(expense.getPurpose()));
     }
 
-    private void verifyAirTravelFormOutReason(AirExpense expense)
+    private void verifyAirTravelFormOutReason(Expense expense)
     {
         if (!(expense.getOutReason()==null))
         {
-            softAssert.assertEquals(airTravelForm.getOutReason(),(expense.getOutReason()));
+            softAssert.assertEquals(form.getOutReason(),(expense.getOutReason()));
         }
     }
 }

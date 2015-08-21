@@ -138,7 +138,7 @@ public class BaseForm extends BasePage
     @FindBy(xpath = "//div[@class='type-col']//span[@class='arrow']")
     private WebElement expenseTypeSelectOpenArrow;
 
-    @FindBy(xpath = "//textarea[contains(@name,'OutsideReason')]")
+    @FindBy(xpath = "//textarea[contains(@name,'eason')]")
     private WebElement outsideReasonInput;
 
 
@@ -298,6 +298,8 @@ public class BaseForm extends BasePage
     {
         if (!(reason==null))
         {
+            outsideReasonInput.sendKeys(Keys.CONTROL+"a");
+            outsideReasonInput.sendKeys(Keys.DELETE);
             outsideReasonInput.sendKeys(reason);
             merchantInput.sendKeys("");
         }

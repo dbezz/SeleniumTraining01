@@ -1,14 +1,12 @@
 package Tests;
 
+import Entities.Expense;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 import pages.BaseForm;
 import pages.StartPage;
 import pages.UserGridPage;
 
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -18,47 +16,15 @@ public class HotelExpenseTest extends BaseTest
 {
     private StartPage startPage;
     private UserGridPage userGridPage;
-    private BaseForm hotelExpenseForm;
+    private BaseForm form;
+
+    private Expense expense = new Expense();
+    private Expense expenseUpd = new Expense();
 
     @Test
     public void HotelExpenseTestCRUD()
     {
-        DecimalFormat df = new DecimalFormat("#.00");
-
-        String personalAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000)) / 100);
-        String businessAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        Float amountNum=Float.parseFloat(personalAmount)+Float.parseFloat(businessAmount);
-        String amount = df.format(amountNum);
-
-        String personalAmountUpd = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000)) / 100);
-        String businessAmountUpd = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000)) / 100);
-        amountNum=Float.parseFloat(personalAmountUpd)+Float.parseFloat(businessAmountUpd);
-        String amountUpd = df.format(amountNum);
-
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        Calendar cal = Calendar.getInstance();
-
-        String transactionDate = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String transactionDateUpd = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String travelDate = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String travelDateUpd = dateFormat.format(cal.getTime());
-
-        String merchant = "Holiday Inn Aber";
-        String expenseType = "Food";
-        String note = "Description";
-        String travelProgramBooking = "Other";
-        String purpose = "Onsite with Member";
-
-        String merchantUpd = "Hyatt Grand Aspen";
-        String expenseTypeUpd = "Hotel Night";
-        String noteUpd = "DescriptionUpd";
-        String purposeUpd = "Conference";
-        String travelProgramBookingUpd = "Other";
-
-
+        setHotelExpenseData();
         startPage = PageFactory.initElements(driver, StartPage.class);
 
         if (!startPage.addExpenseDisplayed())
@@ -69,81 +35,146 @@ public class HotelExpenseTest extends BaseTest
 
         userGridPage.openAddExpenseList();
 
-        hotelExpenseForm = userGridPage.openHotelForm();
+        form = userGridPage.openHotelForm();
 
-        hotelExpenseForm.
-                inputMerchant(merchant).
-                setTransactionDate(transactionDate).
-                setTravelDate(travelDate).
-                selectExpenseType(expenseType).
-                inputNote(note).
-                inputPersonalAmount(personalAmount).
-                inputBusinessAmount(businessAmount).
+        form.
+                inputMerchant(expense.getMerchant()).
+                setTransactionDate(expense.getTransactionDate()).
+                setTravelDate(expense.getTravelDate()).
+                selectExpenseType(expense.getExpenseType()).
+                inputNote(expense.getNote()).
+                inputPersonalAmount(expense.getPersonalAmount()).
+                inputBusinessAmount(expense.getBusinessAmount()).
                 openPurposesSelector().
-                selectItem(purpose).
+                selectItem(expense.getPurpose()).
                 closePurposesSelector().
                 openTravelProgramSelector().
-                selectTravelProgramBookingItem(travelProgramBooking);
-        hotelExpenseForm.saveForm();
+                selectTravelProgramBookingItem(expense.getTravelProgramBooking()).
+                inputOutsideReason(expense.getOutReason());
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(merchant, amount),
-                "Record with merchant:" + merchant + " and total amount " + amount + " is added");
+        form.saveForm();
 
-        userGridPage.openRecordMerchantAmount(merchant, amount);
-        hotelExpenseForm.initPage(hotelExpenseForm);
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expense.getMerchant(), expense.getAmount()),
+                "Record with merchant:" + expense.getMerchant() + " and total amount " + expense.getAmount() + " is added");
 
-        softAssert.assertTrue(hotelExpenseForm.getMerchant().contains(merchant), "Merchant: " + merchant);
-        softAssert.assertEquals(hotelExpenseForm.getTransactionDate(), transactionDate, "Transaction date: " + transactionDate);
-        softAssert.assertEquals(hotelExpenseForm.getNote(), note, "Description: " + note);
-        softAssert.assertEquals(hotelExpenseForm.getTravelDate(), travelDate, "Travel date: " + travelDate);
-        softAssert.assertEquals(hotelExpenseForm.getExpenseType(), expenseType, "Expense type: " + expenseType);
-        softAssert.assertEquals(hotelExpenseForm.getPersonalAmount(), personalAmount, "Personal amount: " + personalAmount);
-        softAssert.assertEquals(hotelExpenseForm.getBusinessAmount(), businessAmount, "Business amount: " + businessAmount);
-        softAssert.assertTrue(hotelExpenseForm.getPurpose().contains(purpose), "Purpose: " + purpose);
-        softAssert.assertTrue(hotelExpenseForm.getTravelProgramBooking().contains(travelProgramBooking), "Travel program booking: " + travelProgramBooking);
-
-        hotelExpenseForm.
-                inputMerchant(merchantUpd).
-                setTransactionDate(transactionDateUpd).
-                setTravelDate(travelDateUpd).
-                selectExpenseType(expenseTypeUpd).
-                inputNote(noteUpd).
-                inputPersonalAmount(personalAmountUpd).
-                inputBusinessAmount(businessAmountUpd).
+        userGridPage.openRecordMerchantAmount(expense.getAmount(), expense.getAmount());
+        
+        verifyHotelForm(expense);
+        verifyHotelFormOutReason(expense);
+                
+        form.
+                inputMerchant(expenseUpd.getMerchant()).
+                setTransactionDate(expenseUpd.getTransactionDate()).
+                setTravelDate(expenseUpd.getTravelDate()).
+                selectExpenseType(expenseUpd.getExpenseType()).
+                inputNote(expenseUpd.getNote()).
+                inputPersonalAmount(expenseUpd.getPersonalAmount()).
+                inputBusinessAmount(expenseUpd.getBusinessAmount()).
                 openPurposesSelector().
-                unselectItem(purpose).
-                selectItem(purposeUpd).
+                unselectItem(expense.getPurpose()).
+                selectItem(expenseUpd.getPurpose()).
                 closePurposesSelector().
                 openTravelProgramSelector().
-                selectTravelProgramBookingItem(travelProgramBooking);
-        hotelExpenseForm.saveForm();
+                selectTravelProgramBookingItem(expenseUpd.getTravelProgramBooking()).
+                inputOutsideReason(expenseUpd.getOutReason());
+        form.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(merchantUpd, amountUpd),
-                "Record with merchant:" + merchantUpd + " and total amount " + amountUpd + " is present");
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(merchant, amount),
-                "Record with merchant:" + merchant + " and total amount " + amount + " is not present");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(expense.getMerchant(), expense.getAmount()),
+                "Record with merchant:" + expense.getMerchant() + " and total amount " + expense.getAmount() + " is not present");
 
-        userGridPage.openRecordMerchantAmount(merchantUpd, amountUpd);
-        hotelExpenseForm.initPage(hotelExpenseForm);
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
 
-        softAssert.assertTrue(hotelExpenseForm.getMerchant().contains(merchantUpd), "Updated merchant: " + merchantUpd);
-        softAssert.assertEquals(hotelExpenseForm.getTransactionDate(), transactionDateUpd, "Updated transaction date: " + transactionDateUpd);
-        softAssert.assertEquals(hotelExpenseForm.getNote(), noteUpd, "Updated description: " + noteUpd);
-        softAssert.assertEquals(hotelExpenseForm.getTravelDate(), travelDateUpd, "Updated travel date: " + travelDateUpd);
-        softAssert.assertEquals(hotelExpenseForm.getExpenseType(), expenseTypeUpd, "Updated expense type: " + expenseTypeUpd);
-        softAssert.assertEquals(hotelExpenseForm.getPersonalAmount(), personalAmountUpd, "Updated personal amount: " + personalAmountUpd);
-        softAssert.assertEquals(hotelExpenseForm.getBusinessAmount(), businessAmountUpd, "Updated business amount: " + businessAmountUpd);
-        softAssert.assertTrue(hotelExpenseForm.getPurpose().contains(purposeUpd), "Updated purpose: " + purposeUpd);
-        softAssert.assertTrue(hotelExpenseForm.getTravelProgramBooking().contains(travelProgramBookingUpd), "Updated travel program booking: " + travelProgramBookingUpd);
+        verifyHotelForm(expenseUpd);
+        verifyHotelFormOutReason(expenseUpd);
 
-        hotelExpenseForm.clickCancel();
-        userGridPage.selectRecordMerchantAmount(true, merchantUpd, amountUpd);
+        form.clickSubmit();
+        userGridPage.selectSubmittedTab();
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
+
+        verifyHotelForm(expenseUpd);
+        verifyHotelFormOutReason(expenseUpd);
+
+        form.clickRevert();
+        userGridPage.selectUnsubmittedTab();
+
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
+        verifyHotelForm(expenseUpd);
+        verifyHotelFormOutReason(expenseUpd);
+        form.clickCancel();
+
+        userGridPage.selectRecordMerchantAmount(true, expenseUpd.getMerchant(), expenseUpd.getAmount());
         userGridPage.clickDelete();
         userGridPage.confirmAlert();
 
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(merchantUpd, amountUpd),
-                "Record with merchant:" + merchantUpd + " and total amount " + amountUpd + " is not present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is not present");
 
         softAssert.assertAll();
+
+    }
+
+    private void setHotelExpenseData() {
+        expense.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expense.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expense.setAmount(df.format(Float.parseFloat(expense.getPersonalAmount()) + Float.parseFloat(expense.getBusinessAmount())));
+
+        expenseUpd.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expenseUpd.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expenseUpd.setAmount(df.format(Float.parseFloat(expenseUpd.getPersonalAmount()) + Float.parseFloat(expenseUpd.getBusinessAmount())));
+
+        expense.setTransactionDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        expenseUpd.setTransactionDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        expense.setTravelDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        expenseUpd.setPickUpDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        expenseUpd.setTravelDate(dateFormat.format(cal.getTime()));
+
+        expense.setMerchant("Holiday Inn Aber");
+        expense.setExpenseType("Food");
+        expense.setNote("Note");
+        expense.setPurpose("Onsite with Member");
+        expense.setTravelProgramBooking("Other");
+
+        if (expense.getTravelProgramBooking().equals("Other"))
+        expense.setOutReason("Reason");
+
+        expenseUpd.setMerchant("Hyatt Grand Aspen");
+        expenseUpd.setExpenseType("Hotel Night");
+        expenseUpd.setNote("NoteUpd");
+        expenseUpd.setPurpose("Conference");
+        expenseUpd.setTravelProgramBooking("Other");
+
+        if (expenseUpd.getTravelProgramBooking().equals("Other"))
+        expenseUpd.setOutReason("ReasonUpd");
+   }
+
+    private void verifyHotelForm(Expense expense) {
+        softAssert.assertTrue(form.getMerchant().contains(expense.getMerchant()));
+        softAssert.assertEquals(form.getTransactionDate(), expense.getTransactionDate());
+        softAssert.assertEquals(form.getTravelDate(), expense.getTravelDate());
+        softAssert.assertEquals(form.getExpenseType(), expense.getExpenseType());
+        softAssert.assertEquals(form.getNote(), expense.getNote());
+        softAssert.assertEquals(form.getPersonalAmount(), expense.getPersonalAmount());
+        softAssert.assertEquals(form.getBusinessAmount(), expense.getBusinessAmount());
+        softAssert.assertTrue(form.getPurpose().contains(expense.getPurpose()));
+        softAssert.assertTrue(form.getTravelProgramBooking().contains(expense.getTravelProgramBooking()));
+    }
+
+    private void verifyHotelFormOutReason(Expense expense)
+    {
+        if (!(expense.getOutReason()==null))
+        {
+            softAssert.assertEquals(form.getOutReason(),(expense.getOutReason()));
+        }
     }
 }

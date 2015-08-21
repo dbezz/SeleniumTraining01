@@ -1,14 +1,12 @@
 package Tests;
 
+import Entities.Expense;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 import pages.BaseForm;
 import pages.StartPage;
 import pages.UserGridPage;
 
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -18,40 +16,14 @@ public class BaggageExpenseTest extends BaseTest
 {
     private StartPage startPage;
     private UserGridPage userGridPage;
-    private BaseForm baggageFeeForm;
+    private BaseForm form;
 
+    private Expense expense = new Expense();
+    private Expense expenseUpd = new Expense();
     @Test
     public void BaggageExpenseTestCRUD()
     {
-        DecimalFormat df = new DecimalFormat("#.00");
-
-        String personalAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        String businessAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        Float amountNum=Float.parseFloat(personalAmount)+Float.parseFloat(businessAmount);
-        String amount = df.format(amountNum);
-
-        String personalAmountUpd = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        String businessAmountUpd = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        amountNum=Float.parseFloat(personalAmountUpd)+Float.parseFloat(businessAmountUpd);
-        String amountUpd = df.format(amountNum);
-
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        Calendar cal = Calendar.getInstance();
-
-        String transactionDate = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String dateUpd = dateFormat.format(cal.getTime());
-
-        String merchant = "American Airlines";
-        String city = "Arlington";
-        String description = "Description";
-        String purpose = "Onsite with Prospect";
-
-        String merchantUpd = "Cathay";
-        String cityUpd = "City of Industry";
-        String descriptionUpd = "Description updated";
-        String purposeUpd = "Conference";
-
+        setBaggageExpenseData();
         startPage = PageFactory.initElements(driver, StartPage.class);
         if (!startPage.addExpenseDisplayed())
         {
@@ -60,68 +32,107 @@ public class BaggageExpenseTest extends BaseTest
             userGridPage= PageFactory.initElements(driver, UserGridPage.class);
 
         userGridPage.openAddExpenseList();
-
-        baggageFeeForm = userGridPage.openBaggageFeeForm();
-        baggageFeeForm.inputMerchant(merchant).
-                inputCity(city).
-                inputDescription(description).
-                setTransactionDate(transactionDate).
-                inputPersonalAmount(personalAmount).
-                inputBusinessAmount(businessAmount).
+        form = userGridPage.openBaggageFeeForm();
+        form.
+                inputMerchant(expense.getMerchant()).
+                inputCity(expense.getCity()).
+                inputDescription(expense.getDescription()).
+                setTransactionDate(expense.getTransactionDate()).
+                inputPersonalAmount(expense.getPersonalAmount()).
+                inputBusinessAmount(expense.getBusinessAmount()).
                 openPurposesSelector().
-                selectItem(purpose);
-        baggageFeeForm.saveForm();
+                selectItem(expense.getPurpose());
+        form.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantCityAmount(merchant, city, amount),
-                "Record with merchant:" + merchant + ", city:" + city + " and total amount " + amount + " is added");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expense.getMerchant(), expense.getAmount()),
+                "Record with merchant:" + expense.getMerchant() + " and total amount " + expense.getAmount() + " is added");
 
-        userGridPage.openRecordMerchantCityAmount(merchant, city, amount);
-        baggageFeeForm.initPage(baggageFeeForm);
+        userGridPage.openRecordMerchantAmount(expense.getAmount(), expense.getAmount());
 
-        softAssert.assertEquals(baggageFeeForm.getMerchant(), merchant, "Merchant: " + merchant);
-        softAssert.assertTrue(baggageFeeForm.getCity().contains(city), "City: " + city);
-        softAssert.assertEquals(baggageFeeForm.getTransactionDate(), transactionDate, "Transaction date: " + transactionDate);
-        softAssert.assertEquals(baggageFeeForm.getDescription(), description, "Description:" + description);
-        softAssert.assertEquals(baggageFeeForm.getPersonalAmount(), personalAmount, "Personal amount: " + personalAmount);
-        softAssert.assertEquals(baggageFeeForm.getBusinessAmount(), businessAmount, "Business amount: " + businessAmount);
-        softAssert.assertTrue(baggageFeeForm.getPurpose().contains(purpose), "Purpose: " + purpose);
-
-        baggageFeeForm.
-                inputMerchant(merchantUpd).
-                inputCity(cityUpd).
-                inputDescription(descriptionUpd).
-                setTransactionDate(dateUpd).
-                inputPersonalAmount(personalAmountUpd).
-                inputBusinessAmount(businessAmountUpd).
+        verifyBaggageForm(expense);
+        
+        form.
+                inputMerchant(expenseUpd.getMerchant()).
+                inputCity(expenseUpd.getCity()).
+                inputDescription(expenseUpd.getDescription()).
+                setTransactionDate(expenseUpd.getTransactionDate()).
+                inputPersonalAmount(expenseUpd.getPersonalAmount()).
+                inputBusinessAmount(expenseUpd.getBusinessAmount()).
                 openPurposesSelector().
-                unselectItem(purpose).
-                selectItem(purposeUpd);
-        baggageFeeForm.saveForm();
+                unselectItem(expense.getPurpose()).
+                selectItem(expenseUpd.getPurpose());
+        form.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantCityAmount(merchantUpd, cityUpd, amountUpd),
-                "Record with merchant:" + merchantUpd + ", city:" + cityUpd + " and total amount " + amountUpd + " is present");
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantCityAmount(merchant, city, amount),
-                "Record with merchant:" + merchant + ", city:" + city + " and total amount " + amount + " is not present");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(expense.getMerchant(), expense.getAmount()),
+                "Record with merchant:" + expense.getMerchant() + " and total amount " + expense.getAmount() + " is not present");
 
-        userGridPage.openRecordMerchantCityAmount(merchantUpd, cityUpd, amountUpd);
-        baggageFeeForm.initPage(baggageFeeForm);
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
 
-        softAssert.assertEquals(baggageFeeForm.getMerchant(), merchantUpd, "Updated merchant: " + merchantUpd);
-        softAssert.assertTrue(baggageFeeForm.getCity().contains(cityUpd), "Updated city: " + cityUpd);
-        softAssert.assertEquals(baggageFeeForm.getTransactionDate(), dateUpd, "Updated Transaction date: " + transactionDate);
-        softAssert.assertEquals(baggageFeeForm.getDescription(), descriptionUpd, "Updated description:" + descriptionUpd);
-        softAssert.assertEquals(baggageFeeForm.getPersonalAmount(), personalAmountUpd, "Updated personal amount: "+personalAmountUpd);
-        softAssert.assertEquals(baggageFeeForm.getBusinessAmount(), businessAmountUpd, "Updated business amount: " + businessAmountUpd);
-        softAssert.assertTrue(baggageFeeForm.getPurpose().contains(purposeUpd), "Updated purpose: " + purposeUpd);
+        verifyBaggageForm(expenseUpd);
 
-        baggageFeeForm.clickCancel();
-        userGridPage.selectRecordMerchantCityAmount(true, merchantUpd, cityUpd, amountUpd);
+        form.clickSubmit();
+        userGridPage.selectSubmittedTab();
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
+
+        verifyBaggageForm(expenseUpd);
+
+        form.clickRevert();
+        userGridPage.selectUnsubmittedTab();
+
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is present");
+
+        userGridPage.openRecordMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount());
+        verifyBaggageForm(expenseUpd);
+        form.clickCancel();
+
+        userGridPage.selectRecordMerchantAmount(true, expenseUpd.getMerchant(), expenseUpd.getAmount());
         userGridPage.clickDelete();
         userGridPage.confirmAlert();
 
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantCityAmount(merchantUpd, cityUpd, amountUpd),
-                "Record with merchant:" + merchantUpd + ", city:" + cityUpd + " and total amount " + amountUpd + " is not present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(expenseUpd.getMerchant(), expenseUpd.getAmount()),
+                "Record with merchant:" + expenseUpd.getMerchant() + " and total amount " + expenseUpd.getAmount() + " is not present");
 
         softAssert.assertAll();
     }
+    private void setBaggageExpenseData()
+    {
+        expense.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expense.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expense.setAmount(df.format(Float.parseFloat(expense.getPersonalAmount()) + Float.parseFloat(expense.getBusinessAmount())));
+        expense.setTransactionDate(dateFormat.format(cal.getTime()));
+        
+
+        expense.setMerchant("American Airlines");
+        expense.setCity("Arlington");
+        expense.setDescription("Description");
+        expense.setPurpose("Onsite with Prospect");
+
+        expenseUpd.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expenseUpd.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        expenseUpd.setAmount(df.format(Float.parseFloat(expenseUpd.getPersonalAmount()) + Float.parseFloat(expenseUpd.getBusinessAmount())));
+        cal.add(Calendar.DATE, -1);
+        expenseUpd.setTransactionDate(dateFormat.format(cal.getTime()));
+
+        expenseUpd.setMerchant("Cathay");
+        expenseUpd.setCity("City of Industry");
+        expenseUpd.setDescription("Description updated");
+        expenseUpd.setPurpose("Conference");
+    }
+
+    private void verifyBaggageForm(Expense expense)
+    {
+        softAssert.assertTrue(form.getMerchant().contains(expense.getMerchant()));
+        softAssert.assertTrue(form.getCity().contains(expense.getCity()));
+        softAssert.assertEquals(form.getTransactionDate(), expense.getTransactionDate());
+        softAssert.assertEquals(form.getDescription(), expense.getDescription());
+        softAssert.assertEquals(form.getPersonalAmount(), expense.getPersonalAmount());
+        softAssert.assertEquals(form.getBusinessAmount(), expense.getBusinessAmount());
+        softAssert.assertTrue(form.getPurpose().contains(expense.getPurpose()));
+    }
+  
 }
