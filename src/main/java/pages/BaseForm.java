@@ -138,8 +138,8 @@ public class BaseForm extends BasePage
     @FindBy(xpath = "//div[@class='type-col']//span[@class='arrow']")
     private WebElement expenseTypeSelectOpenArrow;
 
-    @FindBy(xpath = "//textarea[@name='airBookedOutsideReason']")
-    private WebElement airBookedOutsideReasonInput;
+    @FindBy(xpath = "//textarea[contains(@name,'OutsideReason')]")
+    private WebElement outsideReasonInput;
 
 
     @FindBy(xpath = "//div[@class='modal-bottombar']//button/span[text()='Save']")
@@ -294,11 +294,11 @@ public class BaseForm extends BasePage
         return this;
     }
 
-    public BaseForm inputAirBookedOutsideReason(String reason)
+    public BaseForm inputOutsideReason(String reason)
     {
         if (!(reason==null))
         {
-            airBookedOutsideReasonInput.sendKeys(reason);
+            outsideReasonInput.sendKeys(reason);
             merchantInput.sendKeys("");
         }
         return this;
@@ -331,7 +331,11 @@ public class BaseForm extends BasePage
 
     public String getBooking()
     {
-        return selectedBooking.getText();
+        if (selectedBooking.isDisplayed())
+        {
+            return selectedBooking.getText();
+        }
+        return submittedBooking.getText();
     }
 
     public String getSubmittedBooking()
@@ -351,7 +355,7 @@ public class BaseForm extends BasePage
 
     public String getOutReason()
     {
-        return airBookedOutsideReasonInput.getAttribute("value");
+        return outsideReasonInput.getAttribute("value");
     }
 
     public String getTravelProgramBooking()

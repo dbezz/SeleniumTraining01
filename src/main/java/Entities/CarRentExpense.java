@@ -1,9 +1,9 @@
 package Entities;
 
 /**
- * Created by dmytro.bezzubikov on 8/17/2015.
+ * Created by dmytro.bezzubikov on 8/20/2015.
  */
-public class AirExpense
+public class CarRentExpense
 {
     private String personalAmount;
     private String businessAmount;
@@ -13,18 +13,33 @@ public class AirExpense
     private String merchant;
     private String booking;
     private String purpose;
+    private String expenseType;
 
-    private String ticketNumber;
-    private String carrier;
-    private String flightNo;
-    private String fromLocation;
-    private String toLocation;
+    private String pickUpDate;
+    private String dropOffDate;
+    private String pickUpLocation;
+    private String dropOffLocation;
 
-    private String carrierExp;
-    private String fromLocationExp;
-    private String toLocationExp;
+    private String pickUpLocationExp;
+    private String dropOffLocationExp;
 
     private String outReason;
+
+    public String getDropOffDate() {
+        return dropOffDate;
+    }
+
+    public void setDropOffDate(String dropOffDate) {
+        this.dropOffDate = dropOffDate;
+    }
+
+    public String getPickUpDate() {
+        return pickUpDate;
+    }
+
+    public void setPickUpDate(String pickUpDate) {
+        this.pickUpDate = pickUpDate;
+    }
 
     public String getOutReason() {
         return outReason;
@@ -32,6 +47,14 @@ public class AirExpense
 
     public void setOutReason(String outReason) {
         this.outReason = outReason;
+    }
+
+    public String getDropOffLocationExp() {
+        return dropOffLocationExp;
+    }
+
+    public void setDropOffLocationExp(String dropOffLocationExp) {
+        this.dropOffLocationExp = dropOffLocationExp;
     }
 
     public String getPersonalAmount() {
@@ -82,52 +105,12 @@ public class AirExpense
         this.merchant = merchant;
     }
 
-    public String getTicketNumber() {
-        return ticketNumber;
-    }
-
-    public void setTicketNumber(String ticketNumber) {
-        this.ticketNumber = ticketNumber;
-    }
-
     public String getBooking() {
         return booking;
     }
 
     public void setBooking(String booking) {
         this.booking = booking;
-    }
-
-    public String getCarrier() {
-        return carrier;
-    }
-
-    public void setCarrier(String carrier) {
-        this.carrier = carrier;
-    }
-
-    public String getFlightNo() {
-        return flightNo;
-    }
-
-    public void setFlightNo(String flightNo) {
-        this.flightNo = flightNo;
-    }
-
-    public String getFromLocation() {
-        return fromLocation;
-    }
-
-    public void setFromLocation(String fromLocation) {
-        this.fromLocation = fromLocation;
-    }
-
-    public String getToLocation() {
-        return toLocation;
-    }
-
-    public void setToLocation(String toLocation) {
-        this.toLocation = toLocation;
     }
 
     public String getPurpose() {
@@ -138,31 +121,36 @@ public class AirExpense
         this.purpose = purpose;
     }
 
-    public String getCarrierExp() {
-        return carrierExp;
+    public String getExpenseType() {
+        return expenseType;
     }
 
-    public void setCarrierExp(String carrierExp) {
-        this.carrierExp = carrierExp;
+    public void setExpenseType(String expenseType) {
+        this.expenseType = expenseType;
     }
 
-    public String getToLocationExp() {
-        return toLocationExp;
+    public String getPickUpLocation() {
+        return pickUpLocation;
     }
 
-    public void setToLocationExp(String toLocationExp) {
-        this.toLocationExp = toLocationExp;
+    public void setPickUpLocation(String pickUpLocation) {
+        this.pickUpLocation = pickUpLocation;
     }
 
-
-
-    public String getFromLocationExp() {
-        return fromLocationExp;
+    public String getDropOffLocation() {
+        return dropOffLocation;
     }
 
-    public void setFromLocationExp(String fromLocationExp) {
-        this.fromLocationExp = fromLocationExp;
+    public void setDropOffLocation(String dropOffLocation) {
+        this.dropOffLocation = dropOffLocation;
     }
 
+    public String getPickUpLocationExp() {
+        return pickUpLocationExp;
+    }
+
+    public void setPickUpLocationExp(String pickUpLocationExp) {
+        this.pickUpLocationExp = pickUpLocationExp;
+    }
 
 }

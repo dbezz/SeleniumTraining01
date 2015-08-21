@@ -1,5 +1,6 @@
 package Tests;
 
+import Entities.CarRentExpense;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 import pages.BaseForm;
@@ -20,59 +21,13 @@ public class CarRentalExpenseTest extends BaseTest
     private UserGridPage userGridPage;
     private BaseForm carRentalForm;
 
+    private CarRentExpense carRentalExpense= new CarRentExpense();
+    private CarRentExpense carRentalExpenseUpd = new CarRentExpense();
+
     @Test
     public void CarRentalTestCRUD()
     {
-        DecimalFormat df = new DecimalFormat("#.00");
-
-        String personalAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000)) / 100);
-        String businessAmount = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        Float amountNum=Float.parseFloat(personalAmount)+Float.parseFloat(businessAmount);
-        String amount = df.format(amountNum);
-
-        String personalAmountUpd = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000)) / 100);
-        String businessAmountUpd = df.format(Float.valueOf(Utils.Utils.randInt(100, 5000))/100);
-        amountNum=Float.parseFloat(personalAmountUpd)+Float.parseFloat(businessAmountUpd);
-        String amountUpd = df.format(amountNum);
-
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        Calendar cal = Calendar.getInstance();
-
-        String transactionDate = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String dateUpd = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String dropOffDate = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String pickUpDate = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String travelDate = dateFormat.format(cal.getTime());
-        String dropOffDateUpd = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String pickUpDateUpd = dateFormat.format(cal.getTime());
-        cal.add(Calendar.DATE, -1);
-        String travelDateUpd = dateFormat.format(cal.getTime());
-
-        String merchant = "Hertz";
-        String pickUpLocation = "Arlanda";
-        String dropOffLocation = "Telluride";
-        String booking = "Balboa travel";
-        String expenseType = "GPS";
-        String purpose = "Onsite with Prospect";
-
-        String pickUpLocationExp = "ARN";
-        String dropOffLocationExp = "TEX";
-
-        String merchantUpd = "Europcar";
-        String pickUpLocationUpd = "Offut";
-        String dropOffLocationUpd = "Geneina";
-        String bookingUpd = "Other";
-        String expenseTypeUpd = "Fuel";
-        String purposeUpd = "Conference";
-
-        String pickUpLocationUpdExp = "OFF";
-        String dropOffLocationUpdExp = "EGN";
-
+        setCarRentExpenseData();
         startPage = PageFactory.initElements(driver, StartPage.class);
 
         if (!startPage.addExpenseDisplayed())
@@ -86,87 +41,160 @@ public class CarRentalExpenseTest extends BaseTest
         carRentalForm = userGridPage.openCarRentalForm();
 
         carRentalForm.
-                inputMerchant(merchant).
-                setPickUpDate(pickUpDate).
-                inputPickUpLocation(pickUpLocation).
-                setdropOffDate(dropOffDate).
-                inputDropOffLocation(dropOffLocation).
-                selectBooking(booking).
-                setTransactionDate(transactionDate).
-                setTravelDate(travelDate).
-                selectExpenseType(expenseType).
-                inputPersonalAmount(personalAmount).
-                inputBusinessAmount(businessAmount).
+                inputMerchant(carRentalExpense.getMerchant()).
+                setPickUpDate(carRentalExpense.getPickUpDate()).
+                inputPickUpLocation(carRentalExpense.getPickUpLocation()).
+                setdropOffDate(carRentalExpense.getDropOffDate()).
+                inputDropOffLocation(carRentalExpense.getDropOffLocation()).
+                selectBooking(carRentalExpense.getBooking()).
+                setTransactionDate(carRentalExpense.getTransactionDate()).
+                setTravelDate(carRentalExpense.getTravelDate()).
+                selectExpenseType(carRentalExpense.getExpenseType()).
+                inputPersonalAmount(carRentalExpense.getPersonalAmount()).
+                inputBusinessAmount(carRentalExpense.getBusinessAmount()).
                 openPurposesSelector().
-                selectItem(purpose);
+                selectItem(carRentalExpense.getPurpose());
 
         carRentalForm.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(merchant, amount),
-                "Record with merchant:" + merchant + " and total amount " + amount + " is added");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(carRentalExpense.getMerchant(), carRentalExpense.getAmount()),
+                "Record with merchant:" + carRentalExpense.getMerchant() + " and total amount " + carRentalExpense.getAmount() + " is added");
 
-        userGridPage.openRecordMerchantAmount(merchant, amount);
+        userGridPage.openRecordMerchantAmount(carRentalExpense.getMerchant(), carRentalExpense.getAmount());
         carRentalForm.initPage(carRentalForm);
 
-        softAssert.assertEquals(carRentalForm.getMerchant(), merchant, "Merchant: " + merchant);
-        softAssert.assertEquals(carRentalForm.getPickUpDate(), pickUpDate, "Pick up date: " + pickUpDate);
-        softAssert.assertEquals(carRentalForm.getPickUpLocation(), pickUpLocationExp, "Pick up location: " + pickUpLocationExp);
-        softAssert.assertEquals(carRentalForm.getDropOffDate(), dropOffDate, "Drop off date: " + dropOffDate);
-        softAssert.assertEquals(carRentalForm.getDropOffLocation(), dropOffLocationExp, "Drop off location: " + dropOffLocationExp);
-        softAssert.assertEquals(carRentalForm.getBooking(), booking, "Booking: " + booking);
-        softAssert.assertEquals(carRentalForm.getTransactionDate(), transactionDate, "Transaction date: " + transactionDate);
-        softAssert.assertEquals(carRentalForm.getTravelDate(), travelDate, "Travel date: " + travelDate);
-        softAssert.assertEquals(carRentalForm.getExpenseType(), expenseType, "Expense type: " + expenseType);
-        softAssert.assertEquals(carRentalForm.getPersonalAmount(), personalAmount, "Personal amount: " + personalAmount);
-        softAssert.assertEquals(carRentalForm.getBusinessAmount(), businessAmount, "Business amount: " + businessAmount);
-        softAssert.assertTrue(carRentalForm.getPurpose().contains(purpose), "Purpose: " + purpose);
+        verifyCarRentalForm(carRentalExpense);
 
         carRentalForm.
-                inputMerchant(merchantUpd).
-                setPickUpDate(pickUpDateUpd).
-                inputPickUpLocation(pickUpLocationUpd).
-                setdropOffDate(dropOffDateUpd).
-                inputDropOffLocation(dropOffLocationUpd).
-                selectBooking(bookingUpd).
-                setTransactionDate(dateUpd).
-                setTravelDate(travelDateUpd).
-                selectExpenseType(expenseTypeUpd).
-                inputPersonalAmount(personalAmountUpd).
-                inputBusinessAmount(businessAmountUpd).
+                inputMerchant(carRentalExpenseUpd.getMerchant()).
+                setPickUpDate(carRentalExpenseUpd.getPickUpDate()).
+                inputPickUpLocation(carRentalExpenseUpd.getPickUpLocation()).
+                setdropOffDate(carRentalExpenseUpd.getDropOffDate()).
+                inputDropOffLocation(carRentalExpenseUpd.getDropOffLocation()).
+                selectBooking(carRentalExpenseUpd.getBooking()).
+                setTransactionDate(carRentalExpenseUpd.getTransactionDate()).
+                setTravelDate(carRentalExpenseUpd.getTravelDate()).
+                selectExpenseType(carRentalExpenseUpd.getExpenseType()).
+                inputPersonalAmount(carRentalExpenseUpd.getPersonalAmount()).
+                inputBusinessAmount(carRentalExpenseUpd.getBusinessAmount()).
                 openPurposesSelector().
-                unselectItem(purpose).
-                selectItem(purposeUpd);
+                unselectItem(carRentalExpense.getPurpose()).
+                selectItem(carRentalExpenseUpd.getPurpose());
         carRentalForm.saveForm();
 
-        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(merchantUpd, amountUpd),
-                "Record with merchant:" + merchantUpd + " and total amount " + amountUpd + " is present");
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(merchant, amount),
-                "Record with merchant:" + merchant + " and total amount " + amount + " is not present");
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount()),
+                "Record with merchant:" + carRentalExpenseUpd.getMerchant() + " and total amount " + carRentalExpenseUpd.getAmount() + " is present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(carRentalExpense.getMerchant(), carRentalExpense.getAmount()),
+                "Record with merchant:" + carRentalExpense.getMerchant() + " and total amount " + carRentalExpense.getAmount() + " is not present");
 
-        userGridPage.openRecordMerchantAmount(merchantUpd, amountUpd);
+        userGridPage.openRecordMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount());
         carRentalForm.initPage(carRentalForm);
 
-        softAssert.assertEquals(carRentalForm.getMerchant(), merchantUpd, "Updated merchant: " + merchantUpd);
-        softAssert.assertEquals(carRentalForm.getPickUpDate(), pickUpDateUpd, "Updated pick up date: " + pickUpDateUpd);
-        softAssert.assertEquals(carRentalForm.getPickUpLocation(), pickUpLocationUpdExp, "Updated pick up location: " + pickUpLocationUpdExp);
-        softAssert.assertEquals(carRentalForm.getDropOffDate(), dropOffDateUpd, "Updated drop off date: " + dropOffDateUpd);
-        softAssert.assertEquals(carRentalForm.getDropOffLocation(), dropOffLocationUpdExp, "Updated drop off location: " + dropOffLocationUpdExp);
-        softAssert.assertEquals(carRentalForm.getBooking(), bookingUpd, "Updated booking: " + bookingUpd);
-        softAssert.assertEquals(carRentalForm.getTransactionDate(), dateUpd, "Updated transaction date: " + dateUpd);
-        softAssert.assertEquals(carRentalForm.getTravelDate(), travelDateUpd, "Updated travel date: " + travelDateUpd);
-        softAssert.assertEquals(carRentalForm.getExpenseType(), expenseTypeUpd, "Updated expense type: " + expenseTypeUpd);
-        softAssert.assertEquals(carRentalForm.getPersonalAmount(), personalAmountUpd, "Updated personal amount: " + personalAmountUpd);
-        softAssert.assertEquals(carRentalForm.getBusinessAmount(), businessAmountUpd, "Updated business amount: " + businessAmountUpd);
-        softAssert.assertTrue(carRentalForm.getPurpose().contains(purposeUpd), "Updated purpose: " + purposeUpd);
+        verifyCarRentalForm(carRentalExpenseUpd);
+        carRentalForm.inputOutsideReason(carRentalExpenseUpd.getOutReason());
 
+        carRentalForm.clickSubmit();
+        userGridPage.selectSubmittedTab();
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount()),
+                "Record with merchant:" + carRentalExpenseUpd.getMerchant() + " and total amount " + carRentalExpenseUpd.getAmount() + " is present");
+        userGridPage.openRecordMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount());
+
+        verifyCarRentalForm(carRentalExpenseUpd);
+        verifyCarRentalFormOutReason(carRentalExpenseUpd);
+
+        carRentalForm.clickRevert();
+        userGridPage.selectUnsubmittedTab();
+
+        softAssert.assertTrue(userGridPage.isRecordPresentByMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount()),
+                "Record with merchant:" + carRentalExpenseUpd.getMerchant() + " and total amount " + carRentalExpenseUpd.getAmount() + " is present");
+
+        userGridPage.openRecordMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount());
+        verifyCarRentalForm(carRentalExpenseUpd);
         carRentalForm.clickCancel();
-        userGridPage.selectRecordMerchantAmount(true, merchantUpd, amountUpd);
+
+        userGridPage.selectRecordMerchantAmount(true, carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount());
         userGridPage.clickDelete();
         userGridPage.confirmAlert();
 
-        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(merchantUpd, amountUpd),
-                "Record with merchant:" + merchantUpd + " and total amount " + amountUpd + " is not present");
+        softAssert.assertFalse(userGridPage.isRecordPresentByMerchantAmount(carRentalExpenseUpd.getMerchant(), carRentalExpenseUpd.getAmount()),
+                "Record with merchant:" + carRentalExpenseUpd.getMerchant() + " and total amount " + carRentalExpenseUpd.getAmount() + " is not present");
 
         softAssert.assertAll();
+    }
+
+    private void setCarRentExpenseData()
+    {
+        carRentalExpense.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        carRentalExpense.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        carRentalExpense.setAmount(df.format(Float.parseFloat(carRentalExpense.getPersonalAmount()) + Float.parseFloat(carRentalExpense.getBusinessAmount())));
+
+        carRentalExpenseUpd.setPersonalAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        carRentalExpenseUpd.setBusinessAmount(df.format(Float.valueOf(Utils.Utils.randInt(100, 749)) / 100));
+        carRentalExpenseUpd.setAmount(df.format(Float.parseFloat(carRentalExpenseUpd.getPersonalAmount()) + Float.parseFloat(carRentalExpenseUpd.getBusinessAmount())));
+
+        carRentalExpense.setTransactionDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        carRentalExpenseUpd.setTransactionDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        carRentalExpense.setDropOffDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        carRentalExpense.setPickUpDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        carRentalExpense.setTravelDate(dateFormat.format(cal.getTime()));
+        carRentalExpenseUpd.setDropOffDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        carRentalExpenseUpd.setPickUpDate(dateFormat.format(cal.getTime()));
+        cal.add(Calendar.DATE, -1);
+        carRentalExpenseUpd.setTravelDate(dateFormat.format(cal.getTime()));
+
+        carRentalExpense.setMerchant("Hertz");
+        carRentalExpense.setPickUpLocation("Arlanda");
+        carRentalExpense.setDropOffLocation("Telluride");
+        carRentalExpense.setBooking("Balboa travel");
+        carRentalExpense.setExpenseType("GPS");
+        carRentalExpense.setPurpose("Onsite with Prospect");
+
+        carRentalExpense.setPickUpLocationExp("ARN");
+        carRentalExpense.setDropOffLocationExp("TEX");
+
+        if (!carRentalExpense.getBooking().equals("Balboa travel"))
+            carRentalExpense.setOutReason("Reason");
+
+        carRentalExpenseUpd.setMerchant("Europcar");
+        carRentalExpenseUpd.setPickUpLocation("Offut");
+        carRentalExpenseUpd.setDropOffLocation("Geneina");
+        carRentalExpenseUpd.setBooking("Other");
+        carRentalExpenseUpd.setExpenseType("Fuel");
+        carRentalExpenseUpd.setPurpose("Conference");
+
+        carRentalExpenseUpd.setPickUpLocationExp("OFF");
+        carRentalExpenseUpd.setDropOffLocationExp("EGN");
+
+        if (!carRentalExpenseUpd.getBooking().equals("Balboa travel"))
+            carRentalExpenseUpd.setOutReason("Reason");
+    }
+    
+    private void verifyCarRentalForm(CarRentExpense expense)
+    {
+        softAssert.assertEquals(carRentalForm.getMerchant(), expense.getMerchant());
+        softAssert.assertEquals(carRentalForm.getPickUpDate(), expense.getPickUpDate());
+        softAssert.assertEquals(carRentalForm.getPickUpLocation(), expense.getPickUpLocationExp());
+        softAssert.assertEquals(carRentalForm.getDropOffDate(), expense.getDropOffDate());
+        softAssert.assertEquals(carRentalForm.getDropOffLocation(), expense.getDropOffLocationExp());
+        softAssert.assertEquals(carRentalForm.getBooking(), expense.getBooking());
+        softAssert.assertEquals(carRentalForm.getTransactionDate(), expense.getTransactionDate());
+        softAssert.assertEquals(carRentalForm.getTravelDate(), expense.getTravelDate());
+        softAssert.assertEquals(carRentalForm.getExpenseType(), expense.getExpenseType());
+        softAssert.assertEquals(carRentalForm.getPersonalAmount(),  expense.getPersonalAmount());
+        softAssert.assertEquals(carRentalForm.getBusinessAmount(),  expense.getBusinessAmount());
+        softAssert.assertTrue(carRentalForm.getPurpose().contains(expense.getPurpose()));
+    }
+
+    private void verifyCarRentalFormOutReason(CarRentExpense expense)
+    {
+        if (!(expense.getOutReason()==null))
+        {
+            softAssert.assertEquals(carRentalForm.getOutReason(),(expense.getOutReason()));
+        }
     }
 }
