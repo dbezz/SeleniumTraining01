@@ -298,10 +298,17 @@ public class BaseForm extends BasePage
     {
         if (!(reason==null))
         {
-            outsideReasonInput.sendKeys(Keys.CONTROL+"a");
-            outsideReasonInput.sendKeys(Keys.DELETE);
-            outsideReasonInput.sendKeys(reason);
-            merchantInput.sendKeys("");
+            if (outsideReasonInput.isDisplayed())
+            {
+                outsideReasonInput.sendKeys(Keys.CONTROL+"a");
+                outsideReasonInput.sendKeys(Keys.DELETE);
+                outsideReasonInput.sendKeys(reason);
+                merchantInput.sendKeys("");
+            }
+            else
+            {
+                //log some warning - "a rule  must have been turned off"
+            }
         }
         return this;
     }

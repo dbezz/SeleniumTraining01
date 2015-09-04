@@ -80,8 +80,11 @@ public class UserGridPage extends BasePage {
     }
 
     public BaseForm openForm(WebElement item) {
-        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(progressBar)));
-        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(item));
+        (new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(progressBar)));(new WebDriverWait(driver, EXPLICIT_TIMEOUT)).until(ExpectedConditions.elementToBeClickable(item));
+        while (!item.isDisplayed())
+        {
+            openAddExpenseList();
+        }
         item.click();
         BaseForm form = new BaseForm(driver);
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, EXPLICIT_TIMEOUT), form);
